@@ -141,7 +141,6 @@ output_register output_register(
 );
 
 
-//nowe do komunikacji z kontrolerem
 
 wire [1:0] step;
 wire [1:0] steps_required;
@@ -175,8 +174,8 @@ instruction_decoder instruction_decoder(
 controller controller(
     .clk(CLK),
     .rst(RST),
-    .steps_required(steps_required), // ile kroków potrzebuje instrukcja
-    .step(step),            // aktualny krok wykonania 
+    .steps_required(steps_required), 
+    .step(step),           
 	.pc_enable(pc_enable),
 	.mar_load(mar_load),
 	.ram_read(ram_read),

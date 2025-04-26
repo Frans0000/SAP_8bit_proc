@@ -17,7 +17,7 @@ assign full_result = inc_a ? (a + 1) :
                      sub   ? (a + ~b + 1) : (a + b);  //U2
 
 
-assign result = alu_enable ? full_result [7:0] : 8'bZ;	// tu nie jestem pewien
+assign result = alu_enable ? full_result [7:0] : 8'bZ;	
 assign c = full_result[8]; 
 assign z = (result == 8'b00000000);
 
@@ -25,4 +25,3 @@ assign z = (result == 8'b00000000);
 endmodule
 
 
-//cos tutaj zle bo alu_enable nigdzie nie jest

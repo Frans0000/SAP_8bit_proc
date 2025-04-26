@@ -1,14 +1,14 @@
 module controller(
     input wire clk,
     input wire rst,
-    input wire [1:0] steps_required, // ile kroków potrzebuje instrukcja
+    input wire [1:0] steps_required, 
     
 	output reg pc_enable,
     output reg mar_load,
     output reg ram_read,
     output reg in_bus,
 	
-	output reg [1:0] step            // aktualny krok wykonania
+	output reg [1:0] step           
     
 );
 
@@ -19,7 +19,7 @@ parameter IR_INSTRUCTION_IN 		= 3'b011;
 parameter DECODE_EXECUTE         	= 3'b100;
 
 
-reg fetch;                  // czy mamy robiæ FETCH nowej instrukcji
+reg fetch;                  
 reg [2:0] state;
 always @(posedge clk or posedge rst) begin
     if (rst) begin
@@ -32,7 +32,7 @@ always @(posedge clk or posedge rst) begin
 	    in_bus <= 0;
     end else begin
         if (fetch) begin
-            // tutaj implementacja fetchowania instrukcji
+            
 			case (state)
 
             FETCH_PC_ADDR: begin
@@ -40,29 +40,29 @@ always @(posedge clk or posedge rst) begin
                 mar_load <= 1;
                 ram_read <= 0;
                 in_bus <= 0;
-                state <= LATCHED_ADDR_TO_MAR;	//wystawiasz na magistrale pc i dajesz mar_load ¿eby przy zboczu to wczyta³
+                state <= LATCHED_ADDR_TO_MAR;	
             end
 
-            LATCHED_ADDR_TO_MAR: begin // po narastajacym zboczu addr jest juz wczytany wiec ustawiasz zeby na kolejnym zboczu ram wrzucil na magistrale polecenie
+            LATCHED_ADDR_TO_MAR: begin 
                 ram_read <= 1;
                 pc_enable <= 0;
 				mar_load <= 0;
 				state <= RAM_INSTRUCTION_OUT;
             end
 
-            RAM_INSTRUCTION_OUT: begin // wyplu³ na magistrale polecenie, wiec ustawiawsz in_bus ¿eby instruction register zaci¹gn¹³
+            RAM_INSTRUCTION_OUT: begin 
 				in_bus <= 1;
 				ram_read <= 0;
 				
                 state <= IR_INSTRUCTION_IN;
             end
 
-            IR_INSTRUCTION_IN: begin	// przy narastaj¹cym zboczu instruction register zaci¹ga polecenie
+            IR_INSTRUCTION_IN: begin	
 	            in_bus <= 0;
                 state <= DECODE_EXECUTE;
             end
 			
-			DECODE_EXECUTE: begin //mozna wykonywac instrukcje
+			DECODE_EXECUTE: begin 
 				fetch <= 0;	
 			end
 		
@@ -72,8 +72,7 @@ always @(posedge clk or posedge rst) begin
 			
         end else begin
             if (step == steps_required) begin
-                // jeœli skoñczyliœmy wszystkie kroki instrukcji
-                fetch <= 1;  // znowu fetch nowej instrukcji
+                fetch <= 1;  
                 step <= 0;
 				state <= FETCH_PC_ADDR;
             end else begin
