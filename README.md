@@ -1,7 +1,6 @@
 # Simple as Possible 8-bit Processor
 
 A minimalist 8-bit processor implemented in Verilog. 
-Project is currently work in progress (LOAD/STORE) instructions are not implemented.
 
 ## Architecture
 
@@ -14,7 +13,7 @@ The processor features:
 - Conditional and unconditional jumps using carry and zero flags
 
 ### Schema
-  ![schema](schema.png)
+  ![schema](screens/schema.png)
 
 
 ## Instruction Set
@@ -51,6 +50,20 @@ The processor features:
 ## Sample Program
 
 The processor comes pre-loaded with a simple program.
+
+## Sample Output
+  ![sample_output](screens/example_output.png)
+## Sample Program & Output
+
+```assembly
+; Load values, store and retrieve from memory, then perform addition
+MOV A, 9      ; Load value 9 into register A
+STORE A, 0    ; Store the value from register A to memory address 0
+MOV A, 15     ; Load new value 15 into register A
+LOAD A, 0     ; Load value from memory address 0 back into register A (should be 9)
+MOV B, 4      ; Load value 4 into register B
+ADD A, B      ; Add registers A and B (9 + 4 = 13), result in register A
+```
 
 ## Usage
 
