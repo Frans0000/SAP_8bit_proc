@@ -2,6 +2,8 @@ module controller(
     input wire clk,
     input wire rst,
     input wire [1:0] steps_required, 
+    input wire mar_controller,
+    input wire ram_controller_read,
     
     // signals to fetch instruction
     output reg pc_enable,
@@ -48,7 +50,7 @@ always @(posedge clk) begin
     end 
     else begin
         if (!fetch_complete) begin
-            // fetch
+            // fetch cycle
             case (state)
                 FETCH_PC_ADDR: begin
                     // PC puts address on the bus
@@ -58,7 +60,7 @@ always @(posedge clk) begin
                     in_bus <= 0;
                     state <= LATCHED_ADDR_TO_MAR;
                 end
-
+                
                 LATCHED_ADDR_TO_MAR: begin 
                     // RAM starts reading
                     ram_read <= 1;
@@ -66,14 +68,14 @@ always @(posedge clk) begin
                     mar_load <= 0;
                     state <= RAM_INSTRUCTION_OUT;
                 end
-
+                
                 RAM_INSTRUCTION_OUT: begin 
                     // in_bus active while ram_read active
                     in_bus <= 1;
                     ram_read <= 1;
                     state <= IR_INSTRUCTION_IN;
                 end
-
+                
                 IR_INSTRUCTION_IN: begin    
                     // turn off signals, IR loaded data
                     in_bus <= 0;
@@ -94,9 +96,25 @@ always @(posedge clk) begin
                     state <= FETCH_PC_ADDR;
                 end
             endcase
-        end 
-        else begin
-            // execute
+        end
+        else begin 
+            // execute cycle
+            // Handle control signals for memory operations
+            if (mar_controller) begin
+                mar_load <= 1;
+            end
+            else begin
+                mar_load <= 0;
+            end
+            
+            if (ram_controller_read) begin
+                ram_read <= 1;
+            end
+            else begin
+                ram_read <= 0;
+            end
+            
+            // Step counter management
             if (step == steps_required) begin
                 fetch_complete <= 0;  
                 step <= 0;
@@ -108,5 +126,4 @@ always @(posedge clk) begin
         end
     end
 end
-
 endmodule

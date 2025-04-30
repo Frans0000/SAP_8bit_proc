@@ -18,10 +18,12 @@ initial begin
     end
     
     // example instructions
-    memory[0] = 8'b0001_0001; // 8'b0001_0001 - MOV A, 1
-    memory[1] = 8'b0010_0011; // 8'b0010_0011 - MOV B, 3
-	memory[2] = 8'b0111_0000; // 8'b0111_0000 - ADD A, B (A = A + B = 1 + 3 = 4)
-    memory[3] = 8'b1001_0000; // 8'b1001_0000 - OUT A
+    memory[0] = 8'b0001_1001; // MOV A, 9    
+	memory[1] = 8'b0101_0000; // store A, addr so value A goes to memory[0]
+	memory[2] = 8'b0001_1111; // MOV A, 15
+	memory[3] = 8'b0011_0000; // load to A value from memory[0]
+	memory[4] = 8'b0010_0100; // MOV B, 4
+	memory[5] = 8'b0111_0000; // ADD A, B so should be 9 + 4 = 13
 end
 
 // writing to ram

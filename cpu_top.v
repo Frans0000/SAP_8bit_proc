@@ -13,6 +13,10 @@ initial begin
     #100 RST = 0;  
 end
 
+
+wire ram_controller_read;
+wire mar_controller;
+
 // instruction decoder's signals
 wire pc_inc;
 wire pc_load;
@@ -126,7 +130,7 @@ instruction_decoder instruction_decoder(
     .opcode(decoder_data),
     .c(c),    
     .z(z),    
-    .fetch_complete(fetch_complete),
+    .fetch_complete(fetch_complete), //
     .reg_load_a(reg_load_a),
     .reg_enable_a(reg_enable_a),
     .reg_load_b(reg_load_b),
@@ -141,7 +145,9 @@ instruction_decoder instruction_decoder(
     .step(step),
     .steps_required(steps_required),
     .inc_a(inc_a),
-    .dec_a(dec_a)
+    .dec_a(dec_a),
+	.ram_controller_read(ram_controller_read),
+	.mar_controller(mar_controller)
 );
 
 controller controller(
@@ -153,7 +159,9 @@ controller controller(
     .mar_load(mar_load),
     .ram_read(ram_read),
     .in_bus(in_bus),
-    .fetch_complete(fetch_complete)
+    .fetch_complete(fetch_complete),
+	.ram_controller_read(ram_controller_read),
+	.mar_controller(mar_controller)
 );
 
 endmodule

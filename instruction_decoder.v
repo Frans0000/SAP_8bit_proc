@@ -19,6 +19,9 @@ module instruction_decoder(
     output reg inc_a,
     output reg dec_a,
     
+	output reg ram_controller_read,
+	//output reg ram_controller_write,
+	output reg mar_controller,
     input wire [1:0] step,
     output reg [1:0] steps_required
 );
@@ -38,7 +41,9 @@ always @(*) begin
     out_bus = 0;
     inc_a = 0;
     dec_a = 0;
-    
+	mar_controller = 0;
+    ram_controller_read = 0;
+	
     steps_required = 2'b01; // default 1 step
     
     // decoding once fetch is completed
@@ -79,11 +84,11 @@ always @(*) begin
                 steps_required = 2'b11; // three steps
                 case (step)
                     2'b00: begin
-                        out_bus = 1;
-                        // mar_load controlled by controller
+                        mar_controller = 1;
                     end
                     2'b01: begin
-                        // ram_read controlled by controller
+						out_bus = 1;
+                        ram_controller_read = 1;
                     end
                     2'b10: begin
                         reg_load_a = 1;
@@ -97,10 +102,11 @@ always @(*) begin
                 steps_required = 2'b11;
                 case (step)
                     2'b00: begin
-                        out_bus = 1;
+						mar_controller = 1;
                     end
                     2'b01: begin
-                        // mar_load controlled by controller
+						out_bus = 1;
+                        ram_controller_read = 1;
                     end
                     2'b10: begin
                         reg_load_b = 1;
@@ -110,32 +116,36 @@ always @(*) begin
             end
 
             4'b0101: begin // STORE A, [addr]
-                steps_required = 2'b10; 
+                steps_required = 2'b11; 
                 case (step)
                     2'b00: begin
-                        out_bus = 1;
-                        // mar_load controlled by controller
+                        mar_controller = 1;
                     end
                     2'b01: begin
-                        reg_enable_a = 1;
+                        out_bus = 1;
+                    end
+					2'b10: begin
+						reg_enable_a = 1;
                         ram_write = 1;
                         pc_inc = 1;
-                    end
+					end
                 endcase
             end
 
             4'b0110: begin // STORE B, [addr]
-                steps_required = 2'b10; 
+                steps_required = 2'b11; 
                 case (step)
                     2'b00: begin
-                        out_bus = 1;
-                        // mar_load controlled by controller
+                        mar_controller = 1;
                     end
                     2'b01: begin
-                        reg_enable_b = 1;
+						out_bus = 1;
+                    end
+					2'b10: begin
+						reg_enable_b = 1;
                         ram_write = 1;
                         pc_inc = 1;
-                    end
+					end
                 endcase
             end
 
