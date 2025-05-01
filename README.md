@@ -1,6 +1,7 @@
 # Simple as Possible 8-bit Processor
 
 A minimalist 8-bit processor implemented in Verilog. 
+The current implementation is functional but is not optimized.
 
 ## Architecture
 
